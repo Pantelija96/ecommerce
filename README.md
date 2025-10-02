@@ -1,61 +1,172 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-commerce Order Management System (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Table of Contents
 
-## About Laravel
+1. [Project Overview](#project-overview)  
+2. [Requirements](#requirements)  
+3. [Installation & Setup](#installation--setup)  
+4. [Database Setup & Seeded Data](#database-setup--seeded-data)  
+5. [Running the Application](#running-the-application)  
+6. [API Documentation](#api-documentation)  
+7. [Authentication](#authentication)  
+8. [Postman Collection](#postman-collection)  
+9. [Testing](#testing)  
+10. [Notes](#notes)  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Overview
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This project is a **backend for an E-commerce Order Management System**, built with **Laravel 12**.  
 
-## Learning Laravel
+The system includes:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- User authentication & authorization (admin and customer roles)  
+- Product & category management  
+- Cart & order processing  
+- Mocked payments  
+- Middleware, services, and traits for reusable logic  
+- Notifications & caching  
+- RESTful APIs with consistent JSON responses  
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Requirements
 
-## Laravel Sponsors
+- PHP >= 8.1  
+- Composer  
+- MySQL or MariaDB  
+- Laravel 12  
+- Xdebug
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Installation & Setup
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. Clone the repository  
+2. Install dependencies  
+3. Copy `.env.example` and configure database  
+4. Generate application key  
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Database Setup & Seeded Data
 
-## Code of Conduct
+Run migrations and seeders.  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Seeded Data Includes:
 
-## Security Vulnerabilities
+| Entity     | Count | Notes |
+|------------|-------|-------|
+| Admins     | 2     | Specific emails: admin1@example.com, admin2@example.com |
+| Customers  | 10    | Randomly generated |
+| Categories | 5     | Random names & descriptions |
+| Products   | 20    | Random names, prices, stock |
+| Carts      | 10    | Random products added to carts |
+| Orders     | 15    | Created from carts with mocked payments |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Running the Application
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Start Laravel’s development server.  
+
+The API will be available at: `http://127.0.0.1:8000`
+
+---
+
+## API Documentation
+
+All endpoints return **consistent JSON responses** with the following structure:
+
+- `success`: boolean  
+- `message`: string  
+- `data`: object or array  
+- `errors`: object or null  
+
+### User APIs
+
+| Method | Endpoint         | Role/Auth       | Description            |
+|--------|----------------|----------------|-----------------------|
+| POST   | /api/register   | No             | Register a user       |
+| POST   | /api/login      | No             | Login a user          |
+| POST   | /api/logout     | Bearer token   | Logout                |
+| GET    | /api/me         | Bearer token   | Get current user info |
+
+### Category APIs
+
+| Method | Endpoint               | Role/Auth       | Description           |
+|--------|------------------------|----------------|----------------------|
+| GET    | /api/categories        | No             | List categories      |
+| POST   | /api/categories        | Admin           | Create category      |
+| PUT    | /api/categories/{id}   | Admin           | Update category      |
+| DELETE | /api/categories/{id}   | Admin           | Delete category      |
+
+### Product APIs
+
+| Method | Endpoint               | Role/Auth       | Description           |
+|--------|------------------------|----------------|----------------------|
+| GET    | /api/products          | No             | List products (filters available) |
+| GET    | /api/products/{id}     | No             | Get product details  |
+| POST   | /api/products          | Admin           | Create product       |
+| PUT    | /api/products/{id}     | Admin           | Update product       |
+| DELETE | /api/products/{id}     | Admin           | Delete product       |
+
+### Cart APIs
+
+| Method | Endpoint          | Role/Auth       | Description           |
+|--------|-----------------|----------------|----------------------|
+| GET    | /api/cart        | Customer        | View cart            |
+| POST   | /api/cart        | Customer        | Add product to cart  |
+| PUT    | /api/cart/{id}   | Customer        | Update cart quantity |
+| DELETE | /api/cart/{id}   | Customer        | Remove product       |
+
+### Order APIs
+
+| Method | Endpoint                  | Role/Auth       | Description             |
+|--------|---------------------------|----------------|------------------------|
+| POST   | /api/orders               | Customer        | Place order from cart  |
+| GET    | /api/orders               | Customer        | List user orders       |
+| PUT    | /api/orders/{id}/status   | Admin           | Update order status    |
+
+### Payment APIs
+
+| Method | Endpoint                  | Role/Auth       | Description             |
+|--------|---------------------------|----------------|------------------------|
+| POST   | /api/orders/{id}/payment  | Bearer token   | Mock payment           |
+| GET    | /api/payments/{id}        | Bearer token   | Get payment details    |
+
+---
+
+## Authentication
+
+- Uses **Laravel Sanctum**  
+- After login, use the **Bearer token** in headers: `Authorization: Bearer {{TOKEN}}`  
+- Postman script can save token for future requests
+
+---
+
+## Postman Collection
+
+- File: `E-commerce-API.postman_collection.json`  
+- Import into Postman to test all endpoints  
+- Environment variables: `{{base_url}}`, `{{TOKEN}}`
+
+---
+
+## Testing
+
+- Feature tests for registration, login, product creation, cart updates, order placement  
+- Unit test for `OrderService`  
+- Run tests using `php artisan test`  
+- Code coverage requires Xdebug or PCOV  
+
+---
+
+## Notes
+
+- All APIs return **consistent JSON responses**  
+- **Caching** implemented for product listing  
+- **Notifications & queues** for order confirmation  
+- **Seeded data** included for demo/testing  
+- Designed for **extendability**  
