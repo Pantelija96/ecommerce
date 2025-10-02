@@ -12,6 +12,12 @@ class Payment extends Model
     /** @use HasFactory<\Database\Factories\PaymentFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'order_id',
+        'amount',
+        'status'
+    ];
+
     protected $casts = [
         'status' => PaymentStatus::class
     ];
