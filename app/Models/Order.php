@@ -13,6 +13,12 @@ class Order extends Model
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'total_amount',
+        'status'
+    ];
+
     protected $casts = [
         'status' => OrderStatus::class
     ];
