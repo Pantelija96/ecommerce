@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::factory(9)->create([
+        $users = User::factory(7)->create([
             'role' => 'customer'
         ]);
         User::factory()->create([
@@ -34,14 +34,14 @@ class DatabaseSeeder extends Seeder
 
         $categories = \App\Models\Category::factory(5)->create();
         $products = \App\Models\Product::factory(20)->create([
-            'category_id' => $categories->random()->id,
+            'category_id' => fn() => $categories->random()->id,
         ]);
         \App\Models\Cart::factory(10)->create([
-            'user_id' => $users->random()->id,
-            'product_id' => $products->random()->id,
+            'user_id' => fn() => $users->random()->id,
+            'product_id' => fn() => $products->random()->id,
         ]);
         $orders = \App\Models\Order::factory(15)->create([
-            'user_id' => $users->random()->id,
+            'user_id' => fn() => $users->random()->id,
         ]);
 
     }

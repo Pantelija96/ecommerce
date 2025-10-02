@@ -12,6 +12,12 @@ class OrderServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \App\Models\Category::factory(5)->create();
+    }
+
     public function test_create_order_from_cart()
     {
         $user = User::factory()->create();
@@ -27,7 +33,7 @@ class OrderServiceTest extends TestCase
 
         $this->assertNotNull($order);
         $this->assertEquals(100, $order->total_amount);
-        $this->assertDatabaseMissing('carts', ['user_id' => $user->id]); // cart cleared
-        $this->assertEquals(8, $product->fresh()->stock); // stock decreased
+        $this->assertDatabaseMissing('carts', ['user_id' => $user->id]);
+        $this->assertEquals(8, $product->fresh()->stock);
     }
 }

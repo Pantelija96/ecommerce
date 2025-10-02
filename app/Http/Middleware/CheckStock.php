@@ -19,7 +19,7 @@ class CheckStock
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-        $cartItems = $user->cart()->with('product')->get();
+        $cartItems = $user->carts()->with('product')->get();
 
         foreach ($cartItems as $item) {
             if ($item->product->stock < $item->quantity) {

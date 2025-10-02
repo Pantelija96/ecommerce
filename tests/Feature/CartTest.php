@@ -12,6 +12,12 @@ class CartTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \App\Models\Category::factory(5)->create();
+    }
+
     public function test_customer_can_add_to_cart()
     {
         $user = User::factory()->create(['role' => 'customer']);
