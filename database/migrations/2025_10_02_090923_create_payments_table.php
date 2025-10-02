@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignIdFor(\App\Models\Order::class);
+            $table->float('amount');
+            $table->string('status');
+
             $table->timestamps();
         });
     }

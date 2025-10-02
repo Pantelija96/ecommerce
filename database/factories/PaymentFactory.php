@@ -17,7 +17,8 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => fake()->randomFloat(2, 20, 500),
+            'status' => fake()->randomElement(['success', 'failed', 'refunded'])
         ];
     }
 }
