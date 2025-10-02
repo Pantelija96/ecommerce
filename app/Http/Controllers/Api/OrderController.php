@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Notifications\OrderPlaced;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
@@ -38,6 +39,7 @@ class OrderController extends Controller
         if (!$order) {
             return $this->apiResponse(null, 'Cart is empty or some products are out of stock', 400, false);
         }
+        $user->notify(new OrderPlaced($order));
         return $this->apiResponse(new OrderResource($order), 'Order created successfully', 201);
     }
 

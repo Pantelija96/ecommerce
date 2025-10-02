@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -17,11 +18,19 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::query()
-            ->filterCategory($request->category)
-            ->filterByPrice($request->price_min, $request->price_max)
-            ->searchByName($request->search)
-            ->get();
+        $cacheKey = 'products_'.md5(json_encode($request->all()));
+
+        $products = Cache::remember($cacheKey, 60 * 60, function () use ($request) {
+            $query = \App\Models\Product::query()
+                ->filterByPrice($request->price_min, $request->price_max)
+                ->searchByName($request->search);
+
+            if ($request->category) {
+                $query = $query->filterCategory($request->category);
+            }
+
+            return $query->get();
+        });
 
         return $this->apiResponse(ProductResource::collection($products), 'Products retrieved successfully');
     }
