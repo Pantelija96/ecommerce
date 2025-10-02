@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/cart/{cart}', [CartController::class, 'update']);
         Route::delete('/cart/{cart}', [CartController::class, 'destroy']);
 
-        Route::post('/orders', [OrderController::class, 'store']);
+        Route::post('/orders', [OrderController::class, 'store'])->middleware(['check.stock']);
         Route::get('/orders', [OrderController::class, 'index']);
     });
 });

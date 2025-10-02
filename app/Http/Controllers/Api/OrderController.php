@@ -8,10 +8,17 @@ use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Services\OrderService;
 
 class OrderController extends Controller
 {
     use ApiResponse;
+    protected $orderService;
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -27,29 +34,10 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $cartItems = $user->carts()->with('product')->get();
-        if ($cartItems->isEmpty()) {
-            return $this->apiResponse(null, 'Cart is empty', 400, false);
+        $order = $this->orderService->createOrderFromCart($user);
+        if (!$order) {
+            return $this->apiResponse(null, 'Cart is empty or some products are out of stock', 400, false);
         }
-
-        $totalAmount = 0;
-        foreach ($cartItems as $item) {
-            if ($item->product->stock < $item->quantity) {
-                return $this->apiResponse(null, "Not enough stock for {$item->product->name}", 400, false);
-            }
-            $totalAmount += $item->quantity * $item->product->price;
-        }
-
-        $order = Order::create([
-            'user_id' => $user->id,
-            'total_amount' => $totalAmount,
-            'status' => 'pending',
-        ]);
-        foreach ($cartItems as $item) {
-            $item->product->decrement('stock', $item->quantity);
-        }
-
-        $user->carts()->delete();
         return $this->apiResponse(new OrderResource($order), 'Order created successfully', 201);
     }
 
